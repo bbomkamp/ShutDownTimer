@@ -13,7 +13,7 @@ A simple graphical user interface for a sleep timer application.
 
 ## Usage
 1. Clone the repository to your local machine
-git clone https://github.com/[YOUR_GITHUB_USERNAME]/SleepTimerGUI.git
+git clone https://github.com/bbomkamp/SleepTimerGUI.git
 
 2. Navigate to the project directory
 cd SleepTimerGUI
