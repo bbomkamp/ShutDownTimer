@@ -30,8 +30,20 @@ def countdown(remaining_time, total_time):
 # Initialize app (Initialize Window Object)
 root = tk.Tk()
 root.title("Shut Down Timer")
-root.geometry("600x600")
-root.eval("tk::PlaceWindow . center")  # Centers Window at Launch.
+# root.geometry("600x600")
+# root.eval("tk::PlaceWindow . center")  # Centers Window at Launch.
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+
+# Set the window size to be 40% of the screen size
+window_width = int(screen_width * 0.4)
+window_height = int(screen_height * 0.4)
+root.geometry(f"{window_width}x{window_height}")
+
+# Center the window on the screen
+window_x = int((screen_width - window_width) / 2)
+window_y = int((screen_height - window_height) / 2)
+root.geometry(f"+{window_x}+{window_y}")
 
 
 frame1 = tk.Frame(root, bg="#3d6466")
