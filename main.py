@@ -1,13 +1,15 @@
 import tkinter as tk
 import os
 import tkinter.ttk as ttk
+import threading
 
 
+# Function to update the countdown display
 def countdown(remaining_time, total_time):
     global after_id
     remaining_time -= 1
 
-    # Calculate the remaining hours and seconds
+    # Calculate the remaining hours, minutes and seconds
     hours = remaining_time // 3600
     seconds = remaining_time % 3600
     minutes = seconds // 60
@@ -20,7 +22,7 @@ def countdown(remaining_time, total_time):
     canvas.delete("all")
     canvas.create_arc(10, 10, 190, 190, start=90, extent=360*(remaining_time/total_time), fill="#16c5f5", width=2)
 
-
+    # Check if the time has reached 0 and shut down the system
     if remaining_time <= 0:
         os.system("shutdown /s /t 1")
     else:
@@ -30,8 +32,6 @@ def countdown(remaining_time, total_time):
 # Initialize app (Initialize Window Object)
 root = tk.Tk()
 root.title("Shut Down Timer")
-# root.geometry("600x600")
-# root.eval("tk::PlaceWindow . center")  # Centers Window at Launch.
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
@@ -72,19 +72,24 @@ after_id = None
 def start_countdown():
     global after_id
     start_button.config(state=tk.DISABLED)  # Disable the start button
-    time = int(time_entry.get())
+    time = time_entry.get()
     time_type = time_type_combo.get()
 
-    if time_type == "minutes":
-        time *= 60
-    elif time_type == "hours":
-        time *= 3600
+    try:
+        time = int(time)
+        if time_type == "minutes":
+            time *= 60
+        elif time_type == "hours":
+            time *= 3600
+        if time <= 0:
+            raise ValueError("Time must be greater than 0")
 
-    if time <= 0:
-        os.system("shutdown /s /t 1")
-    else:
-        # Schedule the first iteration of the countdown
-        after_id = root.after(1000, countdown, time, time)
+        # Schedule the first iteration of the countdown in a new thread
+        t = threading.Thread(target=countdown, args=(time, time))
+        t.start()
+    except ValueError as e:
+        stop_countdown()  # Stop the countdown
+        tk.messagebox.showerror("Error", str(e))
 
 
 # Add a button to start the countdown
